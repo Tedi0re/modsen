@@ -1,0 +1,10 @@
+#Создайте Dockerfile для простого веб-сервера Nginx. В рамках сборки образа нужно отредактировать стартовую страницу nginx (welcome page)
+#Соберите образ с именем custom_nginx.
+#Запустите контейнер из этого образа, пробросив порт 80 контейнера на порт 8080 хоста.
+#Проверьте, что приложение доступно по адресу http://localhost:8080.
+FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
+COPY index.html .
+EXPOSE 80
+#docker build -t custom_nginx .
+#docker run -d --rm --name "custom_nginx" -p 8080:80 custom_nginx

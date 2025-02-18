@@ -1,0 +1,36 @@
+#Создайте docker-compose.yml файл, который будет запускать два сервиса:
+#Ubuntu.
+#Базу данных PostgreSQL.
+#Настройте сеть между контейнерами так, чтобы Ubuntu могло подключаться к PostgreSQL.
+#Запустите сервисы с помощью команды docker-compose up.
+#Подключитесь к терминалу Ubuntu контейнера и проверьте соединение с базой данных PostgreSQL
+name: task_2
+services:
+  ubuntu:
+    image: task_2_ubuntu
+    env_file:
+      - .env
+    container_name: ubuntu
+    networks:
+      - app_network
+  postgres:
+    image: postgres:14.16-alpine3.20
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+#docker compose up --build
+#docker exec -it ubuntu bash
+#PGPASSWORD=$POSTGRES_PASSWORD psql -h postgres -U $POSTGRES_USER -d $POSTGRES_DB
