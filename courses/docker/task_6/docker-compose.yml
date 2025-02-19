@@ -1,0 +1,28 @@
+#Создайте docker-compose.yml файл для запуска нескольких экземпляров веб-приложения на Flask и балансировщика нагрузки (например, Nginx).
+#Настройте Nginx так, чтобы он распределял нагрузку между экземплярами Flask-приложения.
+#Запустите сервисы с помощью docker-compose up --scale web=3 (где web - это имя сервиса Flask-приложения).
+#Проверьте, что запросы распределяются между несколькими экземплярами приложения.
+
+name: task_6
+
+services:
+  web:
+    image: task_6
+    networks:
+      - app_network
+  nginx: 
+    image: nginx:alpine
+    container_name: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "3000:80"
+    depends_on:
+      - web
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+#docker compose up --scale web=3 --build 
