@@ -1,0 +1,5 @@
+.env
+!.env.example
+.vagrant/
+courses/docker/task_4/logs/*
+!courses/docker/task_4/logs/

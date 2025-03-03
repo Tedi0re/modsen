@@ -1,13 +1,10 @@
-#Создайте Dockerfile для приложения, которое записывает логи в файл, например Nginx.
-#Используйте Docker Compose для запуска контейнера с этим приложением и подключите том для хранения логов на хосте.
-#Проверьте, что логи записываются в указанный том на хосте.
-
 name: task_4
 
 services:
   task_4_nginx:
     image: custom_nginx
     container_name: task_4_nginx
+    ports:
+      - "8080:80"
     volumes:
       - D:\modsen\courses\docker\task_4\logs:/var/log/nginx
-  

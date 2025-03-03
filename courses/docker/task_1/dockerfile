@@ -8,3 +8,8 @@ COPY index.html .
 EXPOSE 80
 #docker build -t custom_nginx .
 #docker run -d --rm --name "custom_nginx" -p 8080:80 custom_nginx
+
+FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
+COPY index.html .
+EXPOSE 80

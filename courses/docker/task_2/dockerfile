@@ -2,5 +2,3 @@ FROM ubuntu:22.04
 RUN apt-get update && apt install -y postgresql-client
 
 CMD ["sh", "-c", "tail -f /dev/null"]
-
-#docker build -t task_2_ubuntu .

@@ -1,8 +1,5 @@
-#Создайте Dockerfile для приложения, которое использует переменные окружения для настройки (например, порт, на котором оно запускается), например PostgreSQL.
-#Используйте Docker Compose для запуска контейнера с этим приложением и передайте переменные окружения через environment в docker-compose.yml.
-#Проверьте, что приложение использует переданные переменные окружения.
+version: '3.8'
 
-name: task_5
 services:
   postgres:
     image: postgres:14.16-alpine3.20
@@ -15,6 +12,3 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
-
-#docker exec -it postgres bash
-#PGPASSWORD=password psql -h postgres -U user -d db

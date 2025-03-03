@@ -1,9 +1,4 @@
-#Создайте Dockerfile с многоэтапной сборкой для приложения на Go или Java.
-#На первом этапе соберите приложение.
-#На втором этапе скопируйте собранный бинарник в минимальный образ на основе alpine.
-#Соберите образ и запустите контейнер, чтобы убедиться, что приложение работает.
-
-FROM golang:1.23
+FROM golang:1.23 AS builder
 WORKDIR /src
 COPY <<EOF ./main.go
 package main
@@ -17,7 +12,5 @@ EOF
 RUN go build -o /bin/hello ./main.go
 
 FROM alpine
-COPY --from=0 /bin/hello /bin/hello
+COPY --from=builder /bin/hello /bin/hello
 CMD ["/bin/hello"]
-#docker build -t task_3 .
-#docker run --rm task_3
