@@ -8,6 +8,3 @@ WORKDIR /opt/simple-webapp-flask
 ENV FLASK_APP=app.py
 ENTRYPOINT ["flask", "run", "--host=0.0.0.0", "--port=8080"]
 EXPOSE 8080
-
-#docker build -t task_6 .
-#docker run --name task_6 -p 3000:8080 task_6

@@ -1,5 +1,4 @@
-version: '3.8'
-
+name: task_5
 services:
   postgres:
     image: postgres:14.16-alpine3.20
