@@ -1,0 +1,31 @@
+---
+- name: create ubuntu user
+  hosts: ubuntu
+  become: yes
+  vars_prompt:
+    - name: ubuntu_password
+      prompt: ubuntu password
+      private: true
+  tasks:
+    - name: create ubuntu user
+      ansible.builtin.user:
+        name: ansible_user
+        password: "{{ ubuntu_password | password_hash('sha512') }}"
+        groups: sudo 
+        append: yes
+
+- name: create fedora user
+  hosts: fedora
+  become: yes
+  vars_prompt:
+    - name: fedora_password
+      prompt: fedora password
+      private: true
+  
+  tasks:
+    - name: create fedora user
+      ansible.builtin.user:
+        name: ansible_user
+        password: "{{ fedora_password | password_hash('sha512') }}"
+        groups: wheel 
+        append: yes

@@ -14,6 +14,11 @@
         name: nginx
         state: present
 
+    - name: start nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+
 - name: install httpd
   hosts: fedora1
   remote_user: vagrant
@@ -23,8 +28,14 @@
     - name: update dnf
       ansible.builtin.dnf:
         update_cache: yes
-        
+
     - name: install httpd
       ansible.builtin.dnf:
         name: httpd
         state: present
+
+    - name: start httpd
+      ansible.builtin.service:
+        name: httpd
+        state: started
+      
