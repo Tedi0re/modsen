@@ -1,0 +1,13 @@
+---
+- name: copy file
+  hosts: all
+  remote_user: vagrant
+  become: yes
+  tasks:
+    - name: Copy index.html to /var/www/html/
+      copy:
+        src: ./index.html
+        dest: /var/www/html/index.html
+        owner: vagrant
+        group: vagrant
+        mode: '0644'
