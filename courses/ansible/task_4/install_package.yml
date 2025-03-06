@@ -1,0 +1,30 @@
+---
+- name: install nginx
+  hosts: ubuntu1
+  remote_user: vagrant
+  become: true
+  
+  tasks:
+    - name: update apt
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: install nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+
+- name: install httpd
+  hosts: fedora1
+  remote_user: vagrant
+  become: true
+
+  tasks:
+    - name: update dnf
+      ansible.builtin.dnf:
+        update_cache: yes
+        
+    - name: install httpd
+      ansible.builtin.dnf:
+        name: httpd
+        state: present

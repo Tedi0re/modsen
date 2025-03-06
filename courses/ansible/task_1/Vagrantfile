@@ -20,7 +20,7 @@ SERVICES = {
     }
   },
   'fedora' => {
-    os: 'generic/fedora28',
+    os: 'generic/fedora32',
     ip: '172.16.0.23',
     hostname: 'fedora',
     provider: {
