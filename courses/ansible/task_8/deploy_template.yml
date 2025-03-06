@@ -1,0 +1,13 @@
+---
+- name: deploy template
+  hosts: all
+  remote_user: vagrant
+  become: yes
+  tasks:
+    - name: Deploy index.html.js to /var/www/html/index.html
+      template:
+        src: ./index.html.j2
+        dest: /var/www/html/index.html
+        owner: vagrant
+        group: vagrant
+        mode: '0644'
