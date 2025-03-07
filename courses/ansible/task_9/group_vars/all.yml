@@ -1,1 +1,2 @@
 nginx_version: "1.18.0-6ubuntu14.6"
+httpd_version: "httpd-2.4.46-1.fc32"

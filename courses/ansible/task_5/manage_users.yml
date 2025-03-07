@@ -2,10 +2,12 @@
 - name: create ubuntu user
   hosts: ubuntu
   become: yes
+
   vars_prompt:
     - name: ubuntu_password
       prompt: ubuntu password
       private: true
+
   tasks:
     - name: create ubuntu user
       ansible.builtin.user:
@@ -14,9 +16,11 @@
         groups: sudo 
         append: yes
 
+
 - name: create fedora user
   hosts: fedora
   become: yes
+
   vars_prompt:
     - name: fedora_password
       prompt: fedora password

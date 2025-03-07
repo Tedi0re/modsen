@@ -1,0 +1,16 @@
+---
+- name: playbook with error
+  hosts: all 
+  become: true
+  tasks:
+  - name: install non-exist package
+    ansible.builtin.package:
+      name: "task_10"
+      state: present
+    register: install
+    ignore_errors: yes
+
+  - name: error handler
+    ansible.builtin.debug:
+      msg: "Пакет не найден"
+    when: install is failed

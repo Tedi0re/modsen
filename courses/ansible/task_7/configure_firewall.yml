@@ -3,17 +3,17 @@
   hosts: ubuntu
   become: yes
   tasks:
-    - name: Open 80 port ufw
+    - name: open 80 port ufw
       ansible.builtin.ufw:
         rule: allow
         port: 80
         proto: tcp
-        
+
 - name: configure firewalld
   hosts: fedora
   become: yes
   tasks:
-    - name: Open 80 port firewalld
+    - name: open 80 port firewalld
       ansible.builtin.firewalld:
         port: 80/tcp
         permanent: yes
