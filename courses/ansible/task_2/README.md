@@ -25,6 +25,8 @@ ssh-copy-id vagrant@172.16.0.23
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 python3 get-pip.py
 python3 -m pip install ansible
+echo 'export PATH=$HOME/.local/bin:PATH' >> ~/.bashrc
+source ~/.bashrc
 ```
 ### 4. Проверка подключения
 Проверка по SSH на узле ansible

@@ -35,7 +35,7 @@ systemctl enable containerd
 apt install -y kubelet=1.28.15-1.1 kubeadm=1.28.15-1.1 kubectl=1.28.15-1.1
 
 if [ "$(hostname)" == "master" ]; then
-    kubeadm init --apiserver-advertise-address=172.16.0.2 --pod-network-cidr=10.244.0.0/16
+    kubeadm init --apiserver-advertise-address=172.16.0.11 --pod-network-cidr=10.244.0.0/16
 
     mkdir -p $HOME/.kube
     sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
@@ -51,4 +51,4 @@ if [ "$(hostname)" == "master" ]; then
     echo "HASH=${HASH}" >> /tmp/k8s_info
 fi
 
-#kubeadm join 172.16.0.2:6443 --token $TOKEN --discovery-token-ca-cert-hash sha256:$HASH
+#sudo kubeadm join 172.16.0.11:6443 --token $TOKEN --discovery-token-ca-cert-hash sha256:$HASH

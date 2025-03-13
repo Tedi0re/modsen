@@ -1,0 +1,148 @@
+---
+- name: setup k8s
+  hosts: all
+  remote_user: vagrant
+  become: true
+  tasks:
+    - name: enable kernel modules
+      ansible.builtin.copy:
+        dest: /etc/modules-load.d/k8s.conf
+        content: |
+          overlay
+          br_netfilter
+    
+    - name: load kernel modules
+      ansible.builtin.shell: |
+        sudo modprobe overlay
+        sudo modprobe br_netfilter
+        sleep 5
+      changed_when: false
+
+    - name: сonfigure sysctl
+      ansible.builtin.copy:
+        dest: /etc/sysctl.d/10-k8s.conf
+        content: |
+          net.bridge.bridge-nf-call-ip6tables = 1
+          net.bridge.bridge-nf-call-iptables = 1
+          net.ipv4.ip_forward = 1
+    
+    - name: apply sysctl settings
+      ansible.builtin.shell: |
+        sleep 5
+        sudo sysctl --system
+      changed_when: false
+
+    - name: disable swap
+      ansible.builtin.command: swapoff -a
+      changed_when: false
+
+    - name: remove swap entry from fstab
+      ansible.builtin.lineinfile:
+        path: /etc/fstab
+        regexp: '^\s*/swap\s'
+        state: absent
+
+    - name: install dependencies
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gpg
+        state: present
+        update_cache: yes
+
+    - name: add k8s repository key
+      ansible.builtin.shell: |
+        curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      args:
+        creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+    - name: add k8s repository
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/kubernetes.list
+        content: |
+          deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /
+
+    - name: update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: install containerd
+      ansible.builtin.apt:
+        name: containerd
+        state: present
+
+    - name: configure containerd
+      ansible.builtin.shell: |
+        mkdir -p /etc/containerd
+        containerd config default > /etc/containerd/config.toml
+        sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+      args:
+        creates: /etc/containerd/config.toml
+    
+    - name: restart containerd
+      ansible.builtin.systemd:
+        name: containerd
+        state: restarted
+        enabled: yes
+
+    - name: install k8s components
+      ansible.builtin.apt:
+        name:
+          - kubelet=1.28.15-1.1
+          - kubeadm=1.28.15-1.1
+          - kubectl=1.28.15-1.1
+        state: present
+
+    - name: initialize k8s master
+      ansible.builtin.shell: |
+        sleep 10
+        test -f /etc/kubernetes/admin.conf || kubeadm init --apiserver-advertise-address=172.16.0.11 --pod-network-cidr=10.244.0.0/16
+      when: inventory_hostname == "master"
+
+    - name: configure kubectl root user
+      ansible.builtin.shell: |
+        sleep 10
+        sudo mkdir -p /root/.kube
+        sleep 10
+        sudo cp -i /etc/kubernetes/admin.conf /root/.kube/config
+        sleep 10
+        sudo chown $(id -u):$(id -g) /root/.kube/config
+      when: inventory_hostname == "master"
+
+    - name: deploy Flannel network plugin
+      ansible.builtin.command:
+        cmd: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+      when: inventory_hostname == "master"
+
+    - name: generate k8s token
+      ansible.builtin.shell: kubeadm token create
+      register: token
+      when: inventory_hostname == "master"
+
+    - name: get hash 
+      ansible.builtin.shell: |
+        openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | \
+        openssl rsa -pubin -outform der 2>/dev/null | \
+        openssl dgst -sha256 -hex | awk '{print $2}'
+      register: hash
+      when: inventory_hostname == "master"
+
+    - name: save token and hash to file
+      ansible.builtin.shell: |
+        echo "TOKEN={{ token.stdout }}" > /tmp/k8s_info
+        echo "HASH={{ hash.stdout }}" >> /tmp/k8s_info
+      when: inventory_hostname == "master"z
+    
+    - name: join worker nodes to the cluster
+      ansible.builtin.shell: |
+        sleep 5
+        kubeadm join 172.16.0.11:6443 --token {{ hostvars['master']['token.stdout'] }} --discovery-token-ca-cert-hash sha256:{{ hostvars['master']['hash.stdout'] }}
+      when: inventory_hostname != "master"
+
+    
+
+    
+
+    

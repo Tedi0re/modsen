@@ -1,0 +1,11 @@
+---
+- name: facts
+  hosts: all
+  become: yes
+  tasks:
+    - name: gather facts setup
+      ansible.builtin.setup:
+
+    - name: msg facts
+      ansible.builtin.debug:
+        msg: "{{ ansible_facts }}"

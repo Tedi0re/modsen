@@ -1,0 +1,32 @@
+- name: install web server
+  ansible.builtin.package:
+    name: "{{ 'nginx' if ansible_os_family == 'Debian' else 'httpd' }}"
+    state: present
+
+- name: start web server
+  ansible.builtin.service:
+    name: "{{ 'nginx' if ansible_os_family == 'Debian' else 'httpd' }}"
+    state: started
+
+- name: copy index.html
+  ansible.builtin.copy:
+    src: index.html
+    dest: /var/www/html/index.html
+    owner: vagrant
+    group: vagrant
+    mode: '0644'
+
+- name: open 80 port ufw
+  ansible.builtin.ufw:
+    rule: allow
+    port: 80
+    proto: tcp
+  when: ansible_os_family == "Debian"
+
+- name: open 80 port firewalld
+  ansible.builtin.firewalld:
+    port: 80/tcp
+    permanent: yes
+    state: enabled
+    immediate: yes
+  when: ansible_os_family == "RedHat"

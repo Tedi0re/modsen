@@ -1,0 +1,20 @@
+ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+ helm repo add gitlab https://charts.gitlab.io
+
+ helm repo update
+
+ nano gitlab-values.yaml
+
+ helm install gitlab gitlab/gitlab -f gitlab-values.yaml --timeout 20m --debug
+
+
+ helm --install gitlab gitlab/gitlab \
+  --timeout 600s \
+  --set global.hosts.domain=test.local \
+  --set global.hosts.externalIP=172.16.0.11 \
+  --set certmanager-issuer.email=me@example.com
+
+helm --install gitlab gitlab/gitlab   --timeout 600s   --set global.hosts.domain=test.local   --set global.hosts.externalIP=172.16.0.11   --set certmanager-issuer.email=me@example.com
+
+   sudo kubeadm join 172.16.0.11:6443 --token 429a5s.lj9uj3zpk0m6a9y4 --discovery-token-ca-cert-hash sha256:087ee2c78b35ef47cb29accfd2f9375d905b4e1099f23c709bb99c4ec7040a43
