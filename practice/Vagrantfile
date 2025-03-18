@@ -4,8 +4,8 @@ SERVICES = {
     hostname: 'master',
     provider: {
       name: 'master',
-      memory: 2048,
-      cpus: 2
+      memory: 3072,
+      cpus: 3
     }
   },
   'worker1' => {
@@ -13,8 +13,8 @@ SERVICES = {
     hostname: 'worker1',
     provider: {
       name: 'worker1',
-      memory: 2048,
-      cpus: 2
+      memory: 3072,
+      cpus: 3
     }
   },
   'worker2' => {
@@ -22,19 +22,20 @@ SERVICES = {
     hostname: 'worker2',
     provider: {
       name: 'worker2',
-      memory: 2048,
-      cpus: 2
-    }
-  },
-  'ansible' => {
-    ip: '172.16.0.14',
-    hostname: 'ansible',
-    provider: {
-      name: 'ansible',
-      memory: 1024,
-      cpus: 2
+      memory: 3072,
+      cpus: 3
     }
   }
+  #,
+  # 'ansible' => {
+  #   ip: '172.16.0.14',
+  #   hostname: 'ansible',
+  #   provider: {
+  #     name: 'ansible',
+  #     memory: 1024,
+  #     cpus: 2
+  #   }
+  # }
 }
 
 Vagrant.configure("2") do |config|

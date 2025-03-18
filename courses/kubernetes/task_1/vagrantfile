@@ -1,0 +1,28 @@
+SERVICES = {
+  'minikube' => {
+    os: 'generic/ubuntu2204',
+    ip: '172.16.0.31',
+    hostname: 'minikube',
+    provider: {
+      name: 'minikube',
+      memory: 2048,
+      cpus: 2
+    }
+  },
+}
+
+Vagrant.configure("2") do |config|
+  SERVICES.each do |name, options|
+    config.vm.define name do |node|
+      node.vm.box = options[:os]
+      node.vm.box_version = "4.3.12"
+      node.vm.hostname = options[:hostname] 
+      node.vm.network "private_network", ip: options[:ip], netmask: "255.255.0.0"
+      node.vm.provider "virtualbox" do |vb|
+        vb.name = options[:provider][:name]
+        vb.memory = options[:provider][:memory]
+        vb.cpus = options[:provider][:cpus]
+      end
+    end
+  end
+end

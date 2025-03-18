@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: task_6
+spec:
+  containers:
+    - name: task_6
+      image: <your-dockerhub-username>/my-private-app:latest
+      ports:
+        - containerPort: 80
+      envFrom:
+        - configMapRef:
+            name: app-config
+  imagePullSecrets:
+    - name: regcred
